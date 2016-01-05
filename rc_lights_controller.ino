@@ -16,37 +16,26 @@ void setup() {
   attachPinChangeInterrupt(digitalPinToPinChangeInterrupt(channel_pin[2]), onRising2, CHANGE);
 }
 
-void onRising0(void) {
-  uint8_t trigger = getPinChangeInterruptTrigger(digitalPinToPCINT(channel_pin[0]));
+void processPin(byte pin) {
+  uint8_t trigger = getPinChangeInterruptTrigger(digitalPinToPCINT(channel_pin[pin]));
 
   if(trigger == RISING) {
-    rising_start[0] = micros();
+    rising_start[pin] = micros();
   } else if(trigger == FALLING) {
-    channel_length[0] = micros() - rising_start[0];
+    channel_length[pin] = micros() - rising_start[pin];
   }
-  
+}
+
+void onRising0(void) {
+  processPin(0);
 }
 
 void onRising1(void) {
-  uint8_t trigger = getPinChangeInterruptTrigger(digitalPinToPCINT(channel_pin[1]));
-
-  if(trigger == RISING) {
-    rising_start[1] = micros();
-  } else if(trigger == FALLING) {
-    channel_length[1] = micros() - rising_start[1];
-  }
-  
+  processPin(1);
 }
 
 void onRising2(void) {
-  uint8_t trigger = getPinChangeInterruptTrigger(digitalPinToPCINT(channel_pin[2]));
-
-  if(trigger == RISING) {
-    rising_start[2] = micros();
-  } else if(trigger == FALLING) {
-    channel_length[2] = micros() - rising_start[2];
-  }
-  
+  processPin(2);
 }
 
 void loop() {
