@@ -46,5 +46,5 @@ void loop() {
   Serial.print(channel_length[2]);
   
   Serial.println("");
-  delay(1000);
+  delay(100);
 }
