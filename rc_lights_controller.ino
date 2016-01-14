@@ -17,20 +17,23 @@ volatile unsigned int channel_length[OUTPUT_CHANNELS] = {0, 0};
 
 const byte output_pin[OUTPUT_CHANNELS] = {10, 16, 14};
 
+#define CYCLE_OFF 255
+#define CYCLE_ON -1
+
 /*
  * Use -1 to light it always
  * 255 no light never
  */
 int patterns[9][OUTPUT_CHANNELS][CHANGES_PER_CHANNEL] = {
-  {{255}, {255}, {255}}, //CH1 LOW, CH2 LOW or not connected
-  {{9, 10, 19, 20, 29, 30, 39, 40}, {9, 10, 19, 20, 29, 30, 39, 40}, {9, 10, 19, 20, 29, 30, 39, 40}}, //CH1 MID, CH2 LOW or not connected
-  {{-1}, {-1}, {-1}}, //CH1 HIGH, CH2 LOW or not connected
-  {{255}, {255}, {255}}, //CH1 LOW, CH2 MID
-  {{5, 10, 15, 20, 25, 30, 35, 40}, {5, 10, 15, 20, 25, 30, 35, 40}, {5, 10, 15, 20, 25, 30, 35, 40}}, //CH1 MID, CH2 MID
-  {{-1}, {-1}, {255}}, //CH1 HIGH, CH2 MID
-  {{255}, {255}, {255}}, //CH1 LOW, CH2 HIGH
-  {{20,21,22,23,43,44,45,46}, {20,21,22,23,43,44,45,46}, {20,21,22,23,43,44,45,46}}, //CH1 MID, CH2 HIGH
-  {{255}, {255}, {-1}} //CH1 HIGH, CH2 HIGH
+  {{CYCLE_OFF}, {CYCLE_OFF}, {CYCLE_OFF}}, //CH1 LOW, CH2 LOW or not connected
+  {{9, 10, 19, 20, 29, 30, 39, 40}, {9, 10, 19, 20, 29, 30, 39, 40}, {CYCLE_OFF}}, //CH1 MID, CH2 LOW or not connected
+  {{CYCLE_ON}, {CYCLE_ON}, {CYCLE_ON}}, //CH1 HIGH, CH2 LOW or not connected
+  {{CYCLE_OFF}, {CYCLE_OFF}, {CYCLE_OFF}}, //CH1 LOW, CH2 MID
+  {{5, 10, 15, 20, 25, 30, 35, 40}, {5, 10, 15, 20, 25, 30, 35, 40}, {CYCLE_OFF}}, //CH1 MID, CH2 MID
+  {{CYCLE_ON}, {CYCLE_ON}, {CYCLE_OFF}}, //CH1 HIGH, CH2 MID
+  {{CYCLE_OFF}, {CYCLE_OFF}, {CYCLE_OFF}}, //CH1 LOW, CH2 HIGH
+  {{20,21,22,23,43,44,45,46}, {20,21,22,23,43,44,45,46}, {CYCLE_OFF}}, //CH1 MID, CH2 HIGH
+  {{CYCLE_OFF}, {CYCLE_OFF}, {CYCLE_ON}} //CH1 HIGH, CH2 HIGH
 };
 
 //{9, 10, 19, 20, 29, 30, 39, 40}, 10% PWM
@@ -137,7 +140,7 @@ void loop() {
     for (byte i = 0; i < OUTPUT_CHANNELS; i++) {
       currentPattern = patterns[pattern][i][patternIndex[i]];
   
-      if (currentPattern == -1) {
+      if (currentPattern == CYCLE_ON) {
         output_table[i] = true;
       } else if (tick[i] == currentPattern) {
         patternIndex[i]++;    
