@@ -27,10 +27,10 @@ int patterns[9][OUTPUT_CHANNELS][CHANGES_PER_CHANNEL] = {
   {{-1}, {-1}, {-1}}, //CH1 HIGH, CH2 LOW or not connected
   {{255}, {255}, {255}}, //CH1 LOW, CH2 MID
   {{5, 10, 15, 20, 25, 30, 35, 40}, {5, 10, 15, 20, 25, 30, 35, 40}, {5, 10, 15, 20, 25, 30, 35, 40}}, //CH1 MID, CH2 MID
-  {{-1}, {-1}, {-1}}, //CH1 HIGH, CH2 MID
+  {{-1}, {-1}, {255}}, //CH1 HIGH, CH2 MID
   {{255}, {255}, {255}}, //CH1 LOW, CH2 HIGH
   {{20,21,22,23,43,44,45,46}, {20,21,22,23,43,44,45,46}, {20,21,22,23,43,44,45,46}}, //CH1 MID, CH2 HIGH
-  {{-1}, {-1}, {-1}} //CH1 HIGH, CH2 HIGH
+  {{255}, {255}, {-1}} //CH1 HIGH, CH2 HIGH
 };
 
 //{9, 10, 19, 20, 29, 30, 39, 40}, 10% PWM
@@ -91,18 +91,19 @@ byte output_table[3] = {false, false, false};
 
 byte pattern = 2;
 byte patternPrevious = 0;
-byte patternIndex = 0;
+byte patternIndex[OUTPUT_CHANNELS] = {0, 0, 0};
 
-unsigned int tick = 0;
+unsigned long tick[OUTPUT_CHANNELS] = {0, 0, 0};
 
 int currentPattern = 0;
 
 void resetOutput() {
-  output_table[0] = false;
-  output_table[1] = false;
-  output_table[2] = false;
-  tick = 0;
-  patternIndex = 0;
+
+  for (int i = 0; i < OUTPUT_CHANNELS; i++) {
+    output_table[i] = false;
+    tick[i] = 0;
+    patternIndex[i] = 0;
+  }
 }
 
 byte channelLengthToPosition(unsigned int channelLength) {
@@ -132,32 +133,28 @@ void loop() {
     if (pattern != patternPrevious) {
       resetOutput();
     }
-  
-    currentPattern = patterns[pattern][0][patternIndex];
 
-    if (currentPattern == -1) {
-      for (int i = 0; i < sizeof(output_table); i++) {
-        output_table[i] = true;
-      }
-    } else if (tick == currentPattern) {
-      patternIndex++;
+    for (byte i = 0; i < OUTPUT_CHANNELS; i++) {
+      currentPattern = patterns[pattern][i][patternIndex[i]];
   
-      for (int i = 0; i < sizeof(output_table); i++) {
+      if (currentPattern == -1) {
+        output_table[i] = true;
+      } else if (tick[i] == currentPattern) {
+        patternIndex[i]++;    
         output_table[i] = !output_table[i];
       }
-      
-    }
-
-    tick++;
-
-    if (patternIndex == CHANGES_PER_CHANNEL) {
-      tick = 0;
-      patternIndex = 0;
-    }
-
-    if (tick == MAX_TICK) {
-      tick = 0;
-      patternIndex = 0;
+  
+      tick[i]++;
+  
+      if (patternIndex[i] == CHANGES_PER_CHANNEL) {
+        tick[i] = 0;
+        patternIndex[i] = 0;
+      }
+  
+      if (tick[i] == MAX_TICK) {
+        tick[i] = 0;
+        patternIndex[i] = 0;
+      }
     }
   }
 
