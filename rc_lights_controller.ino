@@ -21,24 +21,24 @@ const byte output_pin[OUTPUT_CHANNELS] = {10, 16, 14};
  * Use -1 to light it always
  * 255 no light never
  */
-int patterns[9][CHANGES_PER_CHANNEL] = {
-  {255}, //CH1 LOW, CH2 LOW or not connected
-  {9, 10, 19, 20, 29, 30, 39, 40}, //CH1 MID, CH2 LOW or not connected
-  {-1}, //CH1 HIGH, CH2 LOW or not connected
-  {255}, //CH1 LOW, CH2 MID
-  {5, 10, 15, 20, 25, 30, 35, 40}, //CH1 MID, CH2 MID
-  {-1}, //CH1 HIGH, CH2 MID
-  {255}, //CH1 LOW, CH2 HIGH
-  {20,21,22,23,43,44,45,46}, //CH1 MID, CH2 HIGH
-  {-1} //CH1 HIGH, CH2 HIGH
+int patterns[9][OUTPUT_CHANNELS][CHANGES_PER_CHANNEL] = {
+  {{255}, {255}, {255}}, //CH1 LOW, CH2 LOW or not connected
+  {{9, 10, 19, 20, 29, 30, 39, 40}, {9, 10, 19, 20, 29, 30, 39, 40}, {9, 10, 19, 20, 29, 30, 39, 40}}, //CH1 MID, CH2 LOW or not connected
+  {{-1}, {-1}, {-1}}, //CH1 HIGH, CH2 LOW or not connected
+  {{255}, {255}, {255}}, //CH1 LOW, CH2 MID
+  {{5, 10, 15, 20, 25, 30, 35, 40}, {5, 10, 15, 20, 25, 30, 35, 40}, {5, 10, 15, 20, 25, 30, 35, 40}}, //CH1 MID, CH2 MID
+  {{-1}, {-1}, {-1}}, //CH1 HIGH, CH2 MID
+  {{255}, {255}, {255}}, //CH1 LOW, CH2 HIGH
+  {{20,21,22,23,43,44,45,46}, {20,21,22,23,43,44,45,46}, {20,21,22,23,43,44,45,46}}, //CH1 MID, CH2 HIGH
+  {{-1}, {-1}, {-1}} //CH1 HIGH, CH2 HIGH
 };
 
-//{9, 10, 19, 20, 29, 30, 39, 40},
-//{5, 10, 15, 20, 25, 30, 35, 40},
-//{20,21,22,23,43,44,45,46},
+//{9, 10, 19, 20, 29, 30, 39, 40}, 10% PWM
+//{5, 10, 15, 20, 25, 30, 35, 40}, 50% PWM
+//{20,21,22,23,43,44,45,46}, Blink-blink
 
 void setup() {
-  Serial.begin(57600);
+//  Serial.begin(57600);
 
   pinMode(channel_pin[0], INPUT);
   pinMode(channel_pin[1], INPUT);
@@ -133,7 +133,7 @@ void loop() {
       resetOutput();
     }
   
-    currentPattern = patterns[pattern][patternIndex];
+    currentPattern = patterns[pattern][0][patternIndex];
 
     if (currentPattern == -1) {
       for (int i = 0; i < sizeof(output_table); i++) {
