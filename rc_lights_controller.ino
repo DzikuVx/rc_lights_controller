@@ -89,13 +89,6 @@ bool masterSwitch = false;
 
 byte output_table[3] = {false, false, false};
 
-/*
- * modes:
- * 0 - blinking according to CH2 input
- * 1 - constant light
- */
-byte mode = 0;
-byte modePrevious = 0;
 byte pattern = 2;
 byte patternPrevious = 0;
 byte patternIndex = 0;
@@ -112,13 +105,21 @@ void resetOutput() {
   patternIndex = 0;
 }
 
-void loop() {
-//  Serial.print(channel_length[0]);
-//  Serial.print(" | ");
-//  Serial.print(channel_length[1]);
-//  Serial.println("");
+byte channelLengthToPosition(unsigned int channelLength) {
 
-  if (channel_length[0] > 1300 && channel_length[0] > 900 && channel_length[0] < 2400) {
+  if (channelLength < 1250 || channelLength > 2400) {
+    return 0;
+  } else if (channelLength < 1750) {
+    return 1;
+  } else {
+    return 2;
+  }
+  
+}
+
+void loop() {
+
+  if (channel_length[0] > 600 && channel_length[0] < 2400) {
     masterSwitch = true;
   } else {
     masterSwitch = false;
@@ -126,71 +127,44 @@ void loop() {
 
   if (masterSwitch) {
 
-    if (channel_length[0] > 1750) {
-      mode = 1;
-    } else {
-      mode = 0;
-    }
+    pattern = (3 * channelLengthToPosition(channel_length[1])) + channelLengthToPosition(channel_length[0]);
 
-    if (channel_length[1] < 1300) {
-      pattern = 0;
-    } else if (channel_length[1] < 1750) {
-      pattern = 1;
-    } else {
-      pattern = 2;
-    }
-
-    if (mode != modePrevious || pattern != patternPrevious) {
+    if (pattern != patternPrevious) {
       resetOutput();
     }
+  
+    currentPattern = patterns[pattern][patternIndex];
 
-    /*
-     * Process mode
-     */
-    if (mode == 1) {
-      output_table[0] = true;
-      output_table[1] = true;
-      output_table[2] = true;
-      tick = 0;
-      patternIndex = 0;
-    } else {
-    
-      currentPattern = patterns[pattern][patternIndex];
-
-      if (currentPattern == -1) {
-        for (int i = 0; i < sizeof(output_table); i++) {
-          output_table[i] = true;
-        }
-      } else if (tick == currentPattern) {
-        patternIndex++;
-    
-        for (int i = 0; i < sizeof(output_table); i++) {
-          output_table[i] = !output_table[i];
-        }
-        
+    if (currentPattern == -1) {
+      for (int i = 0; i < sizeof(output_table); i++) {
+        output_table[i] = true;
       }
-
-      tick++;
-
-      if (patternIndex == CHANGES_PER_CHANNEL) {
-        tick = 0;
-        patternIndex = 0;
+    } else if (tick == currentPattern) {
+      patternIndex++;
+  
+      for (int i = 0; i < sizeof(output_table); i++) {
+        output_table[i] = !output_table[i];
       }
-
-      if (tick == MAX_TICK) {
-        tick = 0;
-        patternIndex = 0;
-      }
+      
     }
 
-    modePrevious = mode;
-    patternPrevious = pattern;
-  } else {
-    resetOutput();
+    tick++;
+
+    if (patternIndex == CHANGES_PER_CHANNEL) {
+      tick = 0;
+      patternIndex = 0;
+    }
+
+    if (tick == MAX_TICK) {
+      tick = 0;
+      patternIndex = 0;
+    }
   }
 
-  for (int i = 0; i < sizeof(output_table); i++) {
-    digitalWrite(output_pin[i], (int) output_table[i]);
+  patternPrevious = pattern;
+
+  for (int i = 0; i < OUTPUT_CHANNELS; i++) {
+    digitalWrite(output_pin[i], (byte) output_table[i]);
   }
   
   delay(100);
