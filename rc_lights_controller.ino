@@ -1,6 +1,9 @@
 #include <PinChangeInterrupt.h>
 
+#define OUTPUT_CHANNELS 3
 #define LPF_FACTOR 0.8
+#define MAX_TICK 127
+#define CHANGES_PER_CHANNEL 8
 
 /*
  * Define pins used to provide RC PWM signal to Arduino
@@ -8,22 +11,31 @@
  * ATMega32u4 board. So this code will work on Uno/Mini/Nano/Micro/Leonardo
  * See PinChangeInterrupt documentation for usable pins on other boards
  */
-const byte channel_pin[] = {8, 9};
-volatile unsigned long rising_start[] = {0, 0};
-volatile unsigned int channel_length[] = {0, 0};
+const byte channel_pin[OUTPUT_CHANNELS] = {8, 9};
+volatile unsigned long rising_start[OUTPUT_CHANNELS] = {0, 0};
+volatile unsigned int channel_length[OUTPUT_CHANNELS] = {0, 0};
 
-const byte output_pin[] = {10, 16, 14};
+const byte output_pin[OUTPUT_CHANNELS] = {10, 16, 14};
 
 /*
  * Use -1 to light it always
  * 255 no light never
  */
-#define MAX_TICK 127
-#define CHANGES_PER_CHANNEL 8
-int patterns[3][CHANGES_PER_CHANNEL] = {{9, 10, 19, 20, 29, 30, 39, 40},{5, 10, 15, 20, 25, 30, 35, 40},{15,16,17,18,33,34,35,36}};
-//5, 10, 15, 20, 25, 30, 35, 40
-//15,16,17,18,33,34,35,36
+int patterns[9][CHANGES_PER_CHANNEL] = {
+  {255}, //CH1 LOW, CH2 LOW or not connected
+  {9, 10, 19, 20, 29, 30, 39, 40}, //CH1 MID, CH2 LOW or not connected
+  {-1}, //CH1 HIGH, CH2 LOW or not connected
+  {255}, //CH1 LOW, CH2 MID
+  {5, 10, 15, 20, 25, 30, 35, 40}, //CH1 MID, CH2 MID
+  {-1}, //CH1 HIGH, CH2 MID
+  {255}, //CH1 LOW, CH2 HIGH
+  {20,21,22,23,43,44,45,46}, //CH1 MID, CH2 HIGH
+  {-1} //CH1 HIGH, CH2 HIGH
+};
 
+//{9, 10, 19, 20, 29, 30, 39, 40},
+//{5, 10, 15, 20, 25, 30, 35, 40},
+//{20,21,22,23,43,44,45,46},
 
 void setup() {
   Serial.begin(57600);
