@@ -8,6 +8,7 @@
 #define CYCLE_OFF 255
 #define CYCLE_ON 0
 #define BUTTON_PIN 15
+#define EEPROM_BUTTON_MODE_ADDRESS 0
 
 /*
  * Define pins used to provide RC PWM signal to Arduino
@@ -43,6 +44,14 @@ byte previousButtonState = HIGH;
 byte currentButtonState = LOW;
 
 void setup() {
+
+  /*
+   * read stored button mode from EEPROM
+   */
+  buttonMode = EEPROM.read(EEPROM_BUTTON_MODE_ADDRESS);
+  if (buttonMode >= sizeof(buttonModes)) {
+    buttonMode = 0;  
+  }
 
   pinMode(channel_pin[0], INPUT);
   pinMode(channel_pin[1], INPUT);
@@ -171,6 +180,11 @@ void loop() {
       if (buttonMode >= sizeof(buttonModes)) {
         buttonMode = 0;
       }
+      /*
+       * Also, save current mode to EEPROM
+       * Let's assume that few thousad writes is safe in this case. Like 100,000 ? A lot!
+       */
+       EEPROM.write(EEPROM_BUTTON_MODE_ADDRESS, buttonMode);
     }
     previousButtonState = currentButtonState;
   }
