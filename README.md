@@ -1,6 +1,10 @@
+# RC Lights Controller
+
 Lights controller for RC planes, drones, quadcopters driven by RC PWM signal
 
-RC Lights controller can work in following modes:
+## Input modes
+
+***RC Lights Controller*** can work in following modes:
 
 * ***No RC input*** - in this mode, light pattern is set by pressing a button. There are 6 preprogrammed patterns that can be used without PWM input. Selected mode is stored in EEPROM memory and will be automatically selected on next power up,
 * ***Single RC PWM input*** - in this mode, lights pattern is determined by RC signal on INPUT_1. 2 and 3 position switches are supported. By default:
@@ -11,15 +15,24 @@ RC Lights controller can work in following modes:
     * ***INPUT_2*** works like subprogram selector 
     * ***OUTPUT_3*** is enabled only when ***INPUT_1*** is in ***HIGH*** state
     
-# Modes
+## Output Modes
 
-# OUTPUT_1 and OUTPUT_2
+Those are default values. They can be modified in code using _patterns_ array. Each number in this array represents cycle number in which output channes should change: from LOW to HIGH, or from HIGH to LOW. Cycle takes 100ms. So, combination of: ```{10, 20, 30, 40, 50, 60, 70, 80}``` means: turn channel ON on cycle 10, turn it OFF on cycle 20, turn it ON on cycle 30 and so on.  
+
+Each channel can accept up to ***400mA*** of current and is 4S LiPo packs ready.
+
+### OUTPUT_1 and OUTPUT_2
     
-|               | INPUT_2 LOW or not connected  | INPUT_2 MID   | INPUT_2 HIGH  | 
-|---            |---                            |---            |---            |
-| INPUT_1 LOW   | OFF                           |   OFF         | OFF           |
-| INPUT_1 MID   | BLINK 1                       | BLINK 2       | BLINK 3       |
-| INPUT_1 HIGH  | ON                            | ON            | OFF           |
+|                     | INPUT_2 LOW or not connected  | INPUT_2 MID   | INPUT_2 HIGH  | 
+|---                  |---                            |---            |---            |
+| ***INPUT_1 LOW***   | OFF                           | OFF           | OFF           |
+| ***INPUT_1 MID***   | BLINK 1                       | BLINK 2       | BLINK 3       |
+| ***INPUT_1 HIGH***  | ON                            | ON            | OFF           |
 
-# OUTPUT_3
+### OUTPUT_3
 
+|                     | INPUT_2 LOW or not connected  | INPUT_2 MID   | INPUT_2 HIGH  | 
+|---                  |---                            |---            |---            |
+| ***INPUT_1 LOW***   | OFF                           | OFF           | OFF           |
+| ***INPUT_1 MID***   | OFF                           | OFF           | OFF           |
+| ***INPUT_1 HIGH***  | ON                            | OFF           | ON            |
