@@ -1,13 +1,13 @@
 #include <EEPROM.h>
 #include <PinChangeInterrupt.h>
 
-#define OUTPUT_CHANNELS 3
+#define OUTPUT_CHANNELS 2
 #define LPF_FACTOR 0.8
 #define MAX_TICK 127
 #define CHANGES_PER_CHANNEL 8
 #define CYCLE_OFF 255
 #define CYCLE_ON 0
-#define BUTTON_PIN 15
+#define BUTTON_PIN 0
 #define EEPROM_BUTTON_MODE_ADDRESS 0
 
 /*
@@ -16,26 +16,26 @@
  * ATMega32u4 board. So this code will work on Uno/Mini/Nano/Micro/Leonardo
  * See PinChangeInterrupt documentation for usable pins on other boards
  */
-const byte channel_pin[OUTPUT_CHANNELS] = {8, 9};
+const byte channel_pin[OUTPUT_CHANNELS] = {2, 1};
 volatile unsigned long rising_start[OUTPUT_CHANNELS] = {0, 0};
 volatile unsigned int channel_length[OUTPUT_CHANNELS] = {0, 0};
 
-const byte output_pin[OUTPUT_CHANNELS] = {10, 16, 14};
+const byte output_pin[OUTPUT_CHANNELS] = {3, 4};
 
 /*
  * Do not use 0 or values above MAX_TICK
  * 255 no light never
  */
 const byte patterns[9][OUTPUT_CHANNELS][CHANGES_PER_CHANNEL] = {
-  {{CYCLE_OFF}, {CYCLE_OFF}, {CYCLE_OFF}}, //CH1 LOW, CH2 LOW or not connected
-  {{9, 10, 19, 20, 29, 30, 39, 40}, {9, 10, 19, 20, 29, 30, 39, 40}, {CYCLE_OFF}}, //CH1 MID, CH2 LOW or not connected
-  {{CYCLE_ON}, {CYCLE_ON}, {CYCLE_ON}}, //CH1 HIGH, CH2 LOW or not connected
-  {{CYCLE_OFF}, {CYCLE_OFF}, {CYCLE_OFF}}, //CH1 LOW, CH2 MID
-  {{5, 10, 15, 20, 25, 30, 35, 40}, {5, 10, 15, 20, 25, 30, 35, 40}, {CYCLE_OFF}}, //CH1 MID, CH2 MID
-  {{CYCLE_ON}, {CYCLE_ON}, {CYCLE_OFF}}, //CH1 HIGH, CH2 MID
-  {{CYCLE_OFF}, {CYCLE_OFF}, {CYCLE_OFF}}, //CH1 LOW, CH2 HIGH
-  {{20,21,22,23,43,44,45,46}, {20,21,22,23,43,44,45,46}, {CYCLE_OFF}}, //CH1 MID, CH2 HIGH
-  {{CYCLE_OFF}, {CYCLE_OFF}, {CYCLE_ON}} //CH1 HIGH, CH2 HIGH
+  {{CYCLE_OFF}, {CYCLE_OFF}}, //CH1 LOW, CH2 LOW or not connected
+  {{9, 10, 19, 20, 29, 30, 39, 40}, {CYCLE_OFF}}, //CH1 MID, CH2 LOW or not connected
+  {{CYCLE_ON}, {CYCLE_ON}}, //CH1 HIGH, CH2 LOW or not connected
+  {{CYCLE_OFF}, {CYCLE_OFF}}, //CH1 LOW, CH2 MID
+  {{5, 10, 15, 20, 25, 30, 35, 40}, {CYCLE_OFF}}, //CH1 MID, CH2 MID
+  {{CYCLE_ON}, {CYCLE_OFF}}, //CH1 HIGH, CH2 MID
+  {{CYCLE_OFF}, {CYCLE_OFF}}, //CH1 LOW, CH2 HIGH
+  {{20,21,22,23,43,44,45,46}, {CYCLE_OFF}}, //CH1 MID, CH2 HIGH
+  {{CYCLE_OFF}, {CYCLE_ON}} //CH1 HIGH, CH2 HIGH
 };
 
 const byte buttonModes[6] = {0, 1, 4, 7, 5, 8};
@@ -61,8 +61,8 @@ void setup() {
   pinMode(output_pin[1], OUTPUT);
   pinMode(output_pin[2], OUTPUT);
 
-  attachPinChangeInterrupt(digitalPinToPinChangeInterrupt(channel_pin[0]), onRising0, CHANGE);
-  attachPinChangeInterrupt(digitalPinToPinChangeInterrupt(channel_pin[1]), onRising1, CHANGE);
+  attachPinChangeInterrupt(channel_pin[0], onRising0, CHANGE);
+  attachPinChangeInterrupt(channel_pin[1], onRising1, CHANGE);
 }
 
 int smooth(int data, float filterVal, float smoothedVal){
@@ -80,7 +80,7 @@ int smooth(int data, float filterVal, float smoothedVal){
 }
 
 void processPin(byte pin) {
-  uint8_t trigger = getPinChangeInterruptTrigger(digitalPinToPCINT(channel_pin[pin]));
+  uint8_t trigger = getPinChangeInterruptTrigger(channel_pin[pin]);
 
   if(trigger == RISING) {
     rising_start[pin] = micros();
@@ -104,9 +104,9 @@ byte output_table[3] = {false, false, false};
 
 byte pattern = 0;
 byte patternPrevious = 0;
-byte patternIndex[OUTPUT_CHANNELS] = {0, 0, 0};
+byte patternIndex[OUTPUT_CHANNELS] = {0, 0};
 
-unsigned long tick[OUTPUT_CHANNELS] = {0, 0, 0};
+unsigned long tick[OUTPUT_CHANNELS] = {0, 0};
 
 int currentPattern = 0;
 
