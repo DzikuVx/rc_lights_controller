@@ -1,0 +1,32 @@
+*Pick And Place List
+*Company=
+*Author=
+*eMail=
+*
+*Project=rc_lights_controller
+*Date=12:15:17
+*CreatedBy=Fritzing 0.9.2b.11.19.8d2d5970658f0bed09c661c9ea9a515b5f40f44c
+*
+*
+*Coordinates in mm, always center of component
+*Origin 0/0=Lower left corner of PCB
+*Rotation in degree (0-360, math. pos.)
+*
+*No;Value;Package;X;Y;Rotation;Side;Name
+1;;TO92 [THT];4.51092;-20.4686;0;Bottom;Q5
+2;;;27.5613;-2.77761;0;Bottom;Hole1
+3;;TO92 [THT];15.0519;-18.1064;180;Bottom;Q4
+4;;[THT];24.7315;-18.7276;90;Bottom;S1
+5;;TO220 [THT];14.8614;-24.1135;180;Bottom;Q6
+6;;;27.5613;-33.2575;0;Bottom;Hole2
+7;;dip;13.5914;-6.58751;0;Bottom;U1
+8;;THT;23.8784;-7.85751;0;Bottom;J2
+9;;THT;13.5914;-33.2575;180;Bottom;J3
+10;3.3k;THT;7.24142;-12.9375;90;Bottom;R2
+11;;;25.219;-30.3224;0;Bottom;TXT1
+12;;THT;13.5914;-30.7175;180;Bottom;J1
+13;;;25.1061;-2.60818;0;Bottom;TXT3
+14;;;2.16141;-33.2575;0;Bottom;Hole3
+15;;THT;19.9414;-31.9875;90;Bottom;J4
+16;470;THT;4.70142;-10.3975;90;Bottom;R3
+17;;;22.7919;-33.1446;0;Bottom;TXT2
