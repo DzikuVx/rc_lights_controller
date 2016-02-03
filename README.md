@@ -24,7 +24,7 @@ Those are default values. They can be modified in code using _patterns_ array. E
 * OUTPUT_1 - this is high current output that should work up 1A of load. Remember that power transistor will heat up, so at one point it will require an radiator,
 * OUTPUT_2 - this is low current output that should not be used above 250mA of load.
 
-Each channel can accept up to ***400mA*** of current and is 4S LiPo packs ready.
+Output channels support up to 40V.
 
 ### OUTPUT_1
     
