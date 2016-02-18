@@ -53,6 +53,8 @@ Those are default values. They can be modified in code using _patterns_ array. E
     * This is low current output that should not be used above 250mA of load.
     * In theory it can accept up to 45V, but it was rather designed to use buzzer or something with similar requirements. So 12V is a real - life limit here 
 
+In case of both outputs, it is most reasonable to use 12V on both.
+
 ### OUTPUT_1
     
 |                     | INPUT_2 LOW or not connected  | INPUT_2 MID   | INPUT_2 HIGH  | 
