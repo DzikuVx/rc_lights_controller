@@ -45,10 +45,13 @@ Those are default values. They can be modified in code using _patterns_ array. E
 
 ##Output max load
 
-* OUTPUT_1 - this is high current output that should work up 1A of load. Remember that power transistor will heat up, so at one point it will require an radiator,
-* OUTPUT_2 - this is low current output that should not be used above 250mA of load.
-
-Each channel can accept up to ***400mA*** of current and is 4S LiPo packs ready.
+* OUTPUT_1
+    * This is high current output that should work up 1A of load. Remember that power transistor will heat up, so at one point it will require an radiator,
+    * On 12V and 400mA power it is already 4.8W load, and max for this transistor is 8W. Be careful 
+    * In theory this output can handle up to 80V, but I recommend not to go above 25V. This is already 6S battery, you really need more? 
+* OUTPUT_2
+    * This is low current output that should not be used above 250mA of load.
+    * In theory it can accept up to 45V, but it was rather designed to use buzzer or something with similar requirements. So 12V is a real - life limit here 
 
 ### OUTPUT_1
     
