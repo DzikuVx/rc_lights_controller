@@ -2,6 +2,30 @@
 
 Lights controller for RC planes, drones, quadcopters driven by RC PWM signal
 
+## Hardware
+
+* ATtiny85 uC
+* Transistor BC337-40 or compatible x2
+* Transistor BD139-16 or compatible
+* 3.3 kOhm resistor
+* 470 Ohm resistor
+* Some kind of PCB, universal for example
+* DuPont 2.54mm male connectors
+* TACT switch
+
+![schema](rc_lights_controller_schem.png)
+![PCB view](rc_lights_controller_pcb.png)
+
+PCB files (Gerber format) ready for production are in PCB folder. Test batch ordered from [OSH Park](https://oshpark.com/) was perfect, ready to solder!
+
+### Programming ATtiny85
+
+* Arduino IDE 1.6.6. Should work on older releases, but never tested
+* ATtiny45/85 board definitions. Tested with [damellis/attiny](https://github.com/damellis/attiny)
+* Uses 8MHz internal osciallator 
+* You will need ISP programmer to program ATtiny. I use USBasp. Works perfectly under Linux, Windows and Mac OS X.
+* Tutorial how to flash ATtiny can be found [here](https://quadmeup.shtr.eu/programming-attiny85-and-attiny45-with-arduino-ide/)
+
 ##Input modes
 
 ***RC Lights Controller*** can work in following modes:
