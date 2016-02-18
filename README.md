@@ -39,11 +39,7 @@ PCB files (Gerber format) ready for production are in PCB folder. Test batch ord
     * ***INPUT_2*** works like subprogram selector 
     * ***OUTPUT_2*** is enabled only when ***INPUT_1*** is in ***HIGH*** state
     
-##Output Modes
-
-Those are default values. They can be modified in code using _patterns_ array. Each number in this array represents cycle number in which output channes should change: from LOW to HIGH, or from HIGH to LOW. Cycle takes 100ms. So, combination of: ```{10, 20, 30, 40, 50, 60, 70, 80}``` means: turn channel ON on cycle 10, turn it OFF on cycle 20, turn it ON on cycle 30 and so on.  
-
-##Output max load
+## Output max load
 
 * OUTPUT_1
     * This is high current output that should work up 1A of load. Remember that power transistor will heat up, so at one point it will require an radiator,
@@ -54,6 +50,10 @@ Those are default values. They can be modified in code using _patterns_ array. E
     * In theory it can accept up to 45V, but it was rather designed to use buzzer or something with similar requirements. So 12V is a real - life limit here 
 
 In case of both outputs, it is most reasonable to use 12V on both.
+    
+## Output Modes
+
+Those are default values. They can be modified in code using _patterns_ array. Each number in this array represents cycle number in which output channes should change: from LOW to HIGH, or from HIGH to LOW. Cycle takes 100ms. So, combination of: ```{10, 20, 30, 40, 50, 60, 70, 80}``` means: turn channel ON on cycle 10, turn it OFF on cycle 20, turn it ON on cycle 30 and so on.  
 
 ### OUTPUT_1
     
